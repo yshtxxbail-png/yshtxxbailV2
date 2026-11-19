@@ -1,8 +1,8 @@
-<div align='center'>yshtxxbail</div>
+<div align='center'>yshtxxbailV2</div>
 
 <p align="center">
 
-  <img src="https://ganga--link--ghhzdp9sv8hk.code.run/i/fr42ty55fs.jpg" width="180" alt="yshtxxbail"/>
+  <img src="https://ganga--link--ghhzdp9sv8hk.code.run/i/fr42ty55fs.jpg" width="180" alt="yshtxxbailV2"/>
 
 </p>
 
@@ -24,14 +24,14 @@ Installation
 Install directly from GitHub (not published on npm registry):
 
 ```bash
-npm install github:yshtxxbail/Baileys
+npm install github:yshtxxbailV2/Baileys
 ```
 
 Or add it to your package.json manually:
 
 ```json
 "dependencies": {
-  "@whiskeysockets/baileys": "github:yshtxxbail/Baileys"
+  "@whiskeysockets/baileys": "github:yshtxxbailV2/Baileys"
 }
 ```
 
@@ -41,7 +41,7 @@ name points to this fork:
 
 ```json
 "dependencies": {
-  "@whiskeysockets/baileys": "github:yshtxxbail/Baileys"
+  "@whiskeysockets/baileys": "github:yshtxxbailV2/Baileys"
 }
 ```
 
@@ -51,7 +51,7 @@ resolve it to this fork under the hood.
 You can also pin to a specific branch or commit:
 
 ```bash
-npm install github:yshtxxbail/Baileys#main
+npm install github:yshtxxbailV2/Baileys#main
 ```
 
 Import
@@ -76,7 +76,7 @@ const {
 } = require('@whiskeysockets/baileys');
 
 const client = makeWASocket({
-  browser: Browsers.yshtxxbail('Chrome'),
+  browser: Browsers.yshtxxbailV2('Chrome'),
   printQRInTerminal: true
 });
 ```
@@ -88,10 +88,10 @@ const {
   default: makeWASocket,
   fetchLatestWAWebVersion,
   Browsers
-} = require('@yshtxxbail/baileys');
+} = require('@yshtxxbailV2/baileys');
 
 const client = makeWASocket({
-  browser: Browsers.yshtxxbail('Chrome'),
+  browser: Browsers.yshtxxbailV2('Chrome'),
   printQRInTerminal: false,
   version: await fetchLatestWAWebVersion(),
   aiLabel: false // set true to show an AI label on messages sent by the bot
@@ -110,7 +110,7 @@ Storing Data
 const {
   default: makeWASocket,
   makeInMemoryStore
-} = require('@yshtxxbail/baileys');
+} = require('@yshtxxbailV2/baileys');
 const pino = require('pino');
 
 const store = makeInMemoryStore({
@@ -144,21 +144,21 @@ logged into the same account). It does not affect delivery to the recipient.
 ```javascript
 // Sent to the recipient, but NOT synced to your other devices
 await client.relayMessage(m.chat, {
-  conversation: "Hello from yshtxxbail"
+  conversation: "Hello from yshtxxbailV2"
 }, {
   noSelfSync: true
 });
 
 // Sent to the recipient AND synced to your other devices (default behavior)
 await client.relayMessage(m.chat, {
-  conversation: "Hello from yshtxxbail"
+  conversation: "Hello from yshtxxbailV2"
 }, {
   noSelfSync: false
 });
 
 // Also works through sendMessage
 await client.sendMessage(m.chat, {
-  text: "Hello from yshtxxbail"
+  text: "Hello from yshtxxbailV2"
 }, {
   noSelfSync: true
 });
@@ -168,7 +168,7 @@ Send an orderMessage
 
 ```javascript
 const fs = require('fs');
-const thumbnail = fs.readFileSync('./yshtxxbailthumb.jpg');
+const thumbnail = fs.readFileSync('./yshtxxbailV2.jpg');
 
 await client.sendMessage(m.chat, {
   thumbnail,
@@ -204,7 +204,7 @@ await client.relayMessage(m.chat, {
   productMessage: {
     title: "Product.pdf",
     description: "Product description",
-    thumbnail: { url: "./yshtxxbailthumb.jpg" },
+    thumbnail: { url: "./yshtxxbailV2.jpg" },
     productId: "EXAMPLE_TOKEN",
     retailerId: "EXAMPLE_RETAILER_ID",
     url: "https://example.com",
