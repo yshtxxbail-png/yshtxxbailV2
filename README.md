@@ -1,10 +1,8 @@
----
-
-<div align='center'>GrenXbaileys</div>
+<div align='center'>yshtxxbail</div>
 
 <p align="center">
 
-  <img src="https://ganga--link--ghhzdp9sv8hk.code.run/i/6r8d73n1.jpg" width="180" alt="GrenXbaileys"/>
+  <img src="https://ganga--link--ghhzdp9sv8hk.code.run/i/fr42ty55fs.jpg" width="180" alt="yshtxxbail"/>
 
 </p>
 
@@ -14,212 +12,182 @@ https://img.shields.io/badge/license-MIT-blue.svg
 https://img.shields.io/badge/source-GitHub-black.svg
 https://img.shields.io/badge/node-%3E%3D20-brightgreen.svg
 
-Pustaka WebSockets untuk berinteraksi dengan WhatsApp Web, dikelola dengan merek GrenXbaileys.
-Proyek ini merupakan fork yang dibangun di atas Baileys oleh WhiskeySockets.
+A WebSockets library for interacting with WhatsApp Web, maintained under the yshtxxbail brand.
+This project is a fork built on top of Baileys by WhiskeySockets.
 
 </div>
 
 ---
 
-Instalasi
+Installation
 
-Membutuhkan Node.js 20+ (paket ini hanya ESM; lihat Impor).
-
-Dari npm registry (setelah dipublikasikan):
+Install directly from GitHub (not published on npm registry):
 
 ```bash
-npm install @grenxbaileys/baileys
+npm install github:yshtxxbail/Baileys
 ```
 
-Langsung dari GitHub:
-
-```bash
-npm install github:GrenXbaileys/Baileys
-```
-
-Atau tambahkan ke package.json secara manual:
+Or add it to your package.json manually:
 
 ```json
 "dependencies": {
-  "@grenxbaileys/baileys": "latest"
+  "@whiskeysockets/baileys": "github:yshtxxbail/Baileys"
 }
 ```
 
-Sudah punya bot yang dibangun dengan @whiskeysockets/baileys asli dan tidak ingin mengubah setiap
-require/import di kodebase? Alias nama dependensinya saja, agar nama paket asli
-mengarah ke fork ini:
+Already have a bot built on the original @whiskeysockets/baileys and don't want to change every
+require/import in your codebase? Alias the dependency name instead, so the original package
+name points to this fork:
 
 ```json
 "dependencies": {
-  "@whiskeysockets/baileys": "npm:@grenxbaileys/baileys"
+  "@whiskeysockets/baileys": "github:yshtxxbail/Baileys"
 }
 ```
 
-Dengan alias ini, tetap gunakan require('@whiskeysockets/baileys') di kode kamu — npm akan
-mengarahkannya ke fork ini di balik layar.
+With this alias, keep using require('@whiskeysockets/baileys') in your code as-is — npm will
+resolve it to this fork under the hood.
 
-Kamu juga bisa pin ke branch atau commit tertentu:
+You can also pin to a specific branch or commit:
 
 ```bash
-npm install github:GrenXbaileys/Baileys#main
+npm install github:yshtxxbail/Baileys#main
 ```
 
-Impor
-
-ESM (berfungsi di semua versi Node.js yang didukung):
-
-```javascript
-import makeWASocket, { Browsers, DisconnectReason } from '@grenxbaileys/baileys';
-```
-
-CommonJS: paket ini hanya ESM, jadi require() hanya berfungsi di Node.js 22.12+ atau 20.19+
-(dukungan require(esm) dari Node). Di versi lama, gunakan import.
+Import
 
 ```javascript
 const {
   default: makeWASocket,
-  // ekspor lainnya
-} = require('@grenxbaileys/baileys');
+  // other exports
+} = require('@whiskeysockets/baileys');
 ```
 
 ---
 
-Menghubungkan ke WhatsApp
+Connecting To WhatsApp
 
-Dengan QR Code
+With QR Code
 
 ```javascript
 const {
   default: makeWASocket,
   Browsers
-} = require('@grenxbaileys/baileys');
+} = require('@whiskeysockets/baileys');
 
 const client = makeWASocket({
-  browser: Browsers.grenxbaileys('Chrome')
-});
-
-// `printQRInTerminal` sudah deprecated: string QR sekarang datang lewat connection.update.
-// Render dengan library QR milikmu (misalnya qrcode-terminal) jika ingin tampil di terminal.
-client.ev.on('connection.update', ({ connection, qr }) => {
-  if (qr) console.log('Scan string QR ini:', qr);
-  if (connection === 'open') console.log('Terhubung');
+  browser: Browsers.yshtxxbail('Chrome'),
+  printQRInTerminal: true
 });
 ```
 
-Hubungkan dengan Pairing Code
+Connect With Pairing Code
 
 ```javascript
 const {
   default: makeWASocket,
   fetchLatestWAWebVersion,
   Browsers
-} = require('@grenxbaileys/baileys');
+} = require('@yshtxxbail/baileys');
 
-async function start() {
-  // fetchLatestWAWebVersion() menghasilkan { version, isLatest, error? }
-  const { version } = await fetchLatestWAWebVersion();
+const client = makeWASocket({
+  browser: Browsers.yshtxxbail('Chrome'),
+  printQRInTerminal: false,
+  version: await fetchLatestWAWebVersion(),
+  aiLabel: false // set true to show an AI label on messages sent by the bot
+  // other options
+});
 
-  const client = makeWASocket({
-    browser: Browsers.grenxbaileys('Chrome'),
-    printQRInTerminal: false,
-    version,
-    aiLabel: false // set true untuk menampilkan label AI pada pesan yang dikirim bot
-    // opsi lainnya
-  });
+const number = "628XXXXXXXXXX";
+const code = await client.requestPairingCode(number.trim()); // or (number, "YYYYYYYY") for a custom pairing code
 
-  const number = "628XXXXXXXXXX";
-  const code = await client.requestPairingCode(number.trim()); // atau (number, "YYYYYYYY") untuk pairing code kustom
-
-  console.log("Pairing code kamu: " + code);
-}
-
-start();
+console.log("Your pairing code: " + code);
 ```
 
-Menyimpan Data
+Storing Data
 
 ```javascript
 const {
   default: makeWASocket,
   makeInMemoryStore
-} = require('@grenxbaileys/baileys');
+} = require('@yshtxxbail/baileys');
 const pino = require('pino');
 
 const store = makeInMemoryStore({
   logger: pino().child({ level: 'silent', stream: 'store' })
 });
 const client = makeWASocket({
-  // opsi
+  // options
 });
 store.bind(client.ev);
 
 client.ev.on('contacts.upsert', () => {
-  console.log('Kontak baru: ' + Object.values(store.contacts()));
+  console.log('New contact: ' + Object.values(store.contacts()));
 });
 ```
 
-Mengirim Pesan
+Sending Messages
 
-Mengirim / meneruskan pesan dengan noSelfSync
+Send / relay a message with noSelfSync
 
-noSelfSync adalah opsi relayMessage (hanya untuk chat pribadi/1-on-1) yang mengontrol apakah
-pesan juga disinkronkan ke perangkat lain milikmu sendiri (ponsel lain/sesi WhatsApp Web yang
-login ke akun yang sama). Ini tidak memengaruhi pengiriman ke penerima.
+noSelfSync is a relayMessage option (private/1-on-1 chats only) that controls whether the
+message is also synced to your other own linked devices (other phones/WhatsApp Web sessions
+logged into the same account). It does not affect delivery to the recipient.
 
-· noSelfSync: true — pesan dikirim ke penerima seperti biasa, tetapi tidak disinkronkan
-  ke perangkat lain milikmu. Berguna saat kamu tidak ingin pesan muncul di sesi lain yang tertaut
-  (misalnya pengiriman senyap/otomatis dari akun bot).
-· noSelfSync: false (default) — perilaku normal. Pesan dikirim ke penerima dan juga
-  disinkronkan ke perangkat lain milikmu, sehingga muncul di semua tempat kamu login, seperti
-  mengirim dari aplikasi WhatsApp resmi.
+· noSelfSync: true — the message is sent to the recipient as normal, but is not synced
+  to your other own devices. Useful when you don't want a message to show up on your other
+  linked sessions (e.g. silent/automated sends from a bot account).
+· noSelfSync: false (default) — normal behavior. The message is sent to the recipient and
+  also synced to your other own devices, so it appears everywhere you're logged in, just like
+  sending from the official WhatsApp app.
 
 ```javascript
-// Dikirim ke penerima, tetapi TIDAK disinkronkan ke perangkat lain milikmu
+// Sent to the recipient, but NOT synced to your other devices
 await client.relayMessage(m.chat, {
-  conversation: "Hello from GrenXbaileys"
+  conversation: "Hello from yshtxxbail"
 }, {
   noSelfSync: true
 });
 
-// Dikirim ke penerima DAN disinkronkan ke perangkat lain milikmu (perilaku default)
+// Sent to the recipient AND synced to your other devices (default behavior)
 await client.relayMessage(m.chat, {
-  conversation: "Hello from GrenXbaileys"
+  conversation: "Hello from yshtxxbail"
 }, {
   noSelfSync: false
 });
 
-// Juga berfungsi melalui sendMessage
+// Also works through sendMessage
 await client.sendMessage(m.chat, {
-  text: "Hello from GrenXbaileys"
+  text: "Hello from yshtxxbail"
 }, {
   noSelfSync: true
 });
 ```
 
-Mengirim orderMessage
+Send an orderMessage
 
 ```javascript
 const fs = require('fs');
-const thumbnail = fs.readFileSync('./grenxbaileysthumb.jpg');
+const thumbnail = fs.readFileSync('./yshtxxbailthumb.jpg');
 
 await client.sendMessage(m.chat, {
   thumbnail,
-  message: "Ringkasan pesanan",
-  orderTitle: "Toko Saya",
+  message: "Order summary",
+  orderTitle: "My Store",
   totalAmount1000: 72502,
   totalCurrencyCode: "IDR"
 }, { quoted: m });
 ```
 
-Mengirim pollResultSnapshotMessage
+Send a pollResultSnapshotMessage
 
 ```javascript
 await client.sendMessage(m.chat, {
   pollResultMessage: {
-    name: "Polling Saya",
+    name: "My Poll",
     options: [
-      { optionName: "Opsi 1" },
-      { optionName: "Opsi 2" }
+      { optionName: "Option 1" },
+      { optionName: "Option 2" }
     ],
     newsletter: {
       newsletterName: "0X8 - Society",
@@ -229,23 +197,23 @@ await client.sendMessage(m.chat, {
 });
 ```
 
-Mengirim productMessage
+Send a productMessage
 
 ```javascript
 await client.relayMessage(m.chat, {
   productMessage: {
-    title: "Produk.pdf",
-    description: "Deskripsi produk",
-    thumbnail: { url: "./grenxbaileysthumb.jpg" },
+    title: "Product.pdf",
+    description: "Product description",
+    thumbnail: { url: "./yshtxxbailthumb.jpg" },
     productId: "EXAMPLE_TOKEN",
     retailerId: "EXAMPLE_RETAILER_ID",
     url: "https://example.com",
-    body: "Teks body",
+    body: "Body text",
     footer: "Footer",
     buttons: [
       {
         name: "cta_url",
-        buttonParamsJson: "{\"display_text\":\"Kunjungi\",\"url\":\"https://example.com\"}"
+        buttonParamsJson: "{\"display_text\":\"Visit\",\"url\":\"https://example.com\"}"
       }
     ],
     priceAmount1000: 72502,
@@ -254,13 +222,13 @@ await client.relayMessage(m.chat, {
 });
 ```
 
-Mengirim interactiveMessage
+Send an interactiveMessage
 
 ```javascript
 await client.sendMessage(m.chat, {
-  image: { url: "./grenxbaileysimg.jpg" },
+  image: { url: "./yshtxxbailimg.jpg" },
   text: "body",
-  title: "title", // wajib saat mengirim media
+  title: "title", // required when sending media
   footer: "footer",
   interactiveButtons: [
     {
@@ -272,38 +240,38 @@ await client.sendMessage(m.chat, {
   ],
   messageParams: JSON.stringify({
     bottom_sheet: {
-      /** parameter lainnya **/
+      /** other params **/
     }
   })
 });
 ```
 
-Mengirim label anggota
+Send a member label
 
 ```javascript
 await client.sendMessage(m.chat, {
   groupLabel: {
-    labelText: "Anggota yang di-tag muncul di sini"
+    labelText: "Tagged members appear here"
   }
 });
 ```
 
-Mengirim pesan ke anggota grup
+Send a message to group members
 
 ```javascript
 await client.sendMessageMembers(m.chat, {
   extendedTextMessage: {
-    text: "Halo anggota"
+    text: "Hello members"
   }
 }, {});
 ```
 
-Helper sendMessage Sederhana
+Simple sendMessage Helpers
 
-Mengirim teks
+Send text
 
 ```javascript
-await client.sendText(m.chat, "Halo!", {
+await client.sendText(m.chat, "Hello!", {
   contextInfo: {
     mentionedJid: [m.chat]
   }
@@ -319,10 +287,10 @@ await client.sendText(m.chat, "Halo!", {
 });
 ```
 
-Mengirim gambar
+Send image
 
 ```javascript
-await client.sendImage(m.chat, { url: "./grenxbaileysimg.jpg" }, "Caption", {
+await client.sendImage(m.chat, { url: "./yshtxxbailimg.jpg" }, "Caption", {
   contextInfo: {
     mentionedJid: [m.chat]
   }
@@ -338,7 +306,7 @@ await client.sendImage(m.chat, { url: "./grenxbaileysimg.jpg" }, "Caption", {
 });
 ```
 
-Mengirim video
+Send video
 
 ```javascript
 await client.sendVideo(m.chat, { url: "./video.mp4" }, "Caption", {
@@ -357,10 +325,10 @@ await client.sendVideo(m.chat, { url: "./video.mp4" }, "Caption", {
 });
 ```
 
-Mengirim audio
+Send audio
 
 ```javascript
-await client.sendAudio(m.chat, { url: "./grenxbaileysaudio.mp3" }, {
+await client.sendAudio(m.chat, { url: "./yshtxxbailaudio.mp3" }, {
   contextInfo: {
     mentionedJid: [m.chat]
   }
@@ -376,7 +344,7 @@ await client.sendAudio(m.chat, { url: "./grenxbaileysaudio.mp3" }, {
 });
 ```
 
-Mengirim lokasi
+Send location
 
 ```javascript
 await client.sendLocation(m.chat, "Caption", 90.0, 90.0, "https://example.com", "1234567890", {
@@ -395,10 +363,10 @@ await client.sendLocation(m.chat, "Caption", 90.0, 90.0, "https://example.com", 
 });
 ```
 
-Mengirim polling
+Send poll
 
 ```javascript
-await client.sendPoll(m.chat, "Pilih satu", ["1", "2", "3"], true, {
+await client.sendPoll(m.chat, "Pick one", ["1", "2", "3"], true, {
   contextInfo: {
     mentionedJid: [m.chat]
   }
@@ -414,10 +382,10 @@ await client.sendPoll(m.chat, "Pilih satu", ["1", "2", "3"], true, {
 });
 ```
 
-Mengirim kuis
+Send quiz
 
 ```javascript
-await client.sendQuiz(m.chat, "Pertanyaan kuis", ["1", "2", "3"], "2", {
+await client.sendQuiz(m.chat, "Quiz question", ["1", "2", "3"], "2", {
   contextInfo: {
     mentionedJid: [m.chat]
   }
@@ -433,51 +401,30 @@ await client.sendQuiz(m.chat, "Pertanyaan kuis", ["1", "2", "3"], "2", {
 });
 ```
 
-Mengirim status mention
+Send status mention
 
 ```javascript
 await client.statusMention(m.chat, {
   extendedTextMessage: {
-    text: "Di-mention di status"
+    text: "Mentioned in status"
   }
 });
 ```
 
 ---
 
-Fitur Gabungan (1.1.0)
+Credits
 
-GrenXbaileys 1.1.0 menggabungkan lapisan tambahan dari fork wbails di atas inti GrenXbaileys:
+yshtxxbail is a fork of Baileys, originally created by
+Adhiraj Singh and maintained by the WhiskeySockets community.
+All credit for the underlying protocol implementation goes to the original authors and contributors.
+See LICENSE for the full license text and copyright notices.
 
-· Lapisan privasi, interop, GraphQL/Wamo, dan message-builder sock.* (lihat lib/Socket/privacy.js, interop.js, graphql.js, message-builder.js)
-· Protokol USync tambahan: business, picture, text status, sidelist, feature (lib/WAUSync/)
-· Pesan sticker pack ({ stickerPacks: {...} }) dan helper metadata stiker (lib/Utils/sticker.js, membutuhkan ffmpeg di PATH untuk konversi stiker)
-· useSqliteAuthState (membutuhkan Node 22.5+ karena memakai node:sqlite; dimuat secara lazy, jadi Node 20 tidak terpengaruh kecuali kamu memanggilnya)
-· Helper persistensi makeInMemoryStore: writeToFile, readFromFile, writeToFileInterval
-· Fallback cstoken 1:1: menyimpan salt NCT dari sinkronisasi app-state dan melampirkan cstoken pada pengiriman privat yang tidak memiliki tctoken. Nonaktifkan per pesan dengan { cstoken: false }.
+Contributing
 
-Implementasi newsletter adalah milik WaBail (lib/Socket/newsletter.js) dan dipakai tanpa perubahan.
-
-Catatan chat pribadi vs grup
-
-· Balas ke msg.key.remoteJid apa adanya. Di chat pribadi bisa berupa @lid; bentuk nomor telepon ada di msg.key.remoteJidAlt.
-· Di grup, pengirim adalah msg.key.participant (alternatifnya di msg.key.participantAlt).
-· Jika pengiriman ke pengguna tidak dapat menemukan perangkat penerima, relayMessage sekarang melempar 421 alih-alih diam-diam melaporkan sukses.
-
-Kredit
-
-GrenXbaileys adalah fork dari Baileys, yang awalnya dibuat oleh
-Adhiraj Singh dan dikelola oleh komunitas WhiskeySockets.
-Semua kredit untuk implementasi protokol dasar diberikan kepada penulis dan kontributor asli.
-Lihat LICENSE untuk teks lisensi lengkap dan pemberitahuan hak cipta.
-
-Kontribusi
-
-Lihat CONTRIBUTING.md untuk panduan melaporkan masalah dan mengirim pull request.
+See CONTRIBUTING.md for guidelines on reporting issues and submitting pull requests.
 
 Disclaimer
 
-Ini bukan produk resmi WhatsApp. Penggunaan library ini untuk mengirim pesan massal atau tidak diminta
-dapat melanggar Ketentuan Layanan WhatsApp dan dapat menyebabkan nomor kamu diblokir. Gunakan dengan bijak.
-
----
+This is not an official WhatsApp product. Use of this library to send bulk or unsolicited messages
+may violate WhatsApp's Terms of Service and can result in your number being banned. Use responsibly.
